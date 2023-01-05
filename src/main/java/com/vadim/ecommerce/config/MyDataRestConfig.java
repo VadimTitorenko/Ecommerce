@@ -19,49 +19,50 @@ import java.util.Set;
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
     private EntityManager entityManager;
-
+    @Autowired
     public MyDataRestConfig(EntityManager theEntityManager) {
         this.entityManager = theEntityManager;
     }
 
-
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-        HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
-        //disable HTTP method for Product: Put, Post, Delete
+
+        HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH};
+
+        // disable HTTP methods for Product: PUT, POST, DELETE and PATCH
         config.getExposureConfiguration()
                 .forDomainType(Product.class)
                 .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
                 .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
 
-        //disable HTTP method for ProductCategory: Put, Post, Delete
+        // disable HTTP methods for ProductCategory: PUT, POST, DELETE and PATCH
         config.getExposureConfiguration()
                 .forDomainType(ProductCategory.class)
                 .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
                 .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
-// call an internal helper method
-        exposeIds(config);
 
+        // call an internal helper method
+        exposeIds(config);
 
     }
 
     private void exposeIds(RepositoryRestConfiguration config) {
 
-// expose entity ids
-//
+        // expose entity ids
+        //
 
-// - gets a list of all entity classes from the entity manager
+        // - get a list of all entity classes from the entity manager
         Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
 
-// - create an array of the entity types
+        // - create an array of the entity types
         List<Class> entityClasses = new ArrayList<>();
 
-// - get the entity types for the entities
+        // - get the entity types for the entities
         for (EntityType tempEntityType : entities) {
             entityClasses.add(tempEntityType.getJavaType());
         }
 
-// - expose the entity ids for the array of entity/domain types
+        // - expose the entity ids for the array of entity/domain types
         Class[] domainTypes = entityClasses.toArray(new Class[0]);
         config.exposeIdsFor(domainTypes);
     }
