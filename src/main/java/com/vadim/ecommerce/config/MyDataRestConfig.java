@@ -39,29 +39,30 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 .forDomainType(ProductCategory.class)
                 .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
                 .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
-//call  an internal helper method
+// call an internal helper method
         exposeIds(config);
 
 
     }
 
     private void exposeIds(RepositoryRestConfiguration config) {
-        //expose entity ids
-        //
-        //-get a list of all entity classes from the entity manager
+
+// expose entity ids
+//
+
+// - gets a list of all entity classes from the entity manager
         Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
 
-        //create an array of the entity types
+// - create an array of the entity types
         List<Class> entityClasses = new ArrayList<>();
 
-        //get the entity types for entities
-        for (EntityType tempEntityType : entities){
+// - get the entity types for the entities
+        for (EntityType tempEntityType : entities) {
             entityClasses.add(tempEntityType.getJavaType());
         }
 
-        //expose the entity ids for the array of entity/domain types
-        Class[] domainType = entityClasses.toArray(new Class[0]);
-        config.exposeIdsFor(domainType);
-
+// - expose the entity ids for the array of entity/domain types
+        Class[] domainTypes = entityClasses.toArray(new Class[0]);
+        config.exposeIdsFor(domainTypes);
     }
 }
