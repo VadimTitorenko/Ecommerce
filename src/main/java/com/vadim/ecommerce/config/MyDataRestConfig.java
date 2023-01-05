@@ -19,9 +19,9 @@ import java.util.Set;
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
     private EntityManager entityManager;
-    @Autowired
+
     public MyDataRestConfig(EntityManager theEntityManager) {
-        entityManager = theEntityManager;
+        this.entityManager = theEntityManager;
     }
 
 
